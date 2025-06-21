@@ -6,59 +6,73 @@
     <title>AI-Powered English Tense Practice Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome for icons -->
+    <!-- Font Awesome for icons (for theme toggle) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* CSS Variables for Themes */
+        /* CSS Variables for Themes based on new palette */
         :root {
             /* Light Theme */
-            --main-bg: #ffffff;
-            --card-bg: #f2f2f2;
-            --secondary-card-bg: #e0f2fe; /* for question box */
-            --text-color: #000000;
-            --secondary-text-color: #2d3748; /* Dark grey for score */
-            --tense-formula-bg: #fefcbf;
-            --tense-formula-text: #744210;
-            --tense-formula-border: #ecc94b;
-            --option-button-bg: #3182ce;
-            --option-button-hover-bg: #2b6cb0;
-            --option-button-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-            --option-button-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
-            --option-button-active-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-            --cta-button-bg: #007bff; /* Light theme CTA */
-            --cta-button-hover-bg: #0056b3;
-            --glow-shadow: 0 0 15px rgba(0, 123, 255, 0.5); /* Soft blue shadow */
-            --glow-border: none;
-            --feedback-correct: #2f855a;
-            --feedback-incorrect: #e53e3e;
-            --spinner-border-top: #3498db;
+            --main-bg: #F9FAFB;
+            --card-bg: #FFFFFF;
+            --info-box-bg: #FEF9C3;
+            --info-box-border: #FACC15; /* Yellow for left border */
+            --question-box-bg: #DBEAFE;
+            --primary-accent-blue: #3B82F6;
+            --primary-accent-blue-hover: #2563EB;
+            --secondary-accent-green-start: #10B981;
+            --secondary-accent-green-end: #059669; /* Darker green for gradient */
+            --secondary-accent-green-hover-start: #0d8a63; /* Slightly darker hover */
+            --secondary-accent-green-hover-end: #047857; /* Slightly darker hover */
+            --warning-accent: #F59E0B; /* Used explicitly for warning, but feedback uses specific red/green */
+            --text-color: #1F2937;
+            --secondary-text-color: #6B7280;
+            --card-shadow-color: rgba(0, 0, 0, 0.05);
+            --button-shadow-color: rgba(0, 0, 0, 0.1);
+            --button-hover-shadow-color: rgba(0, 0, 0, 0.15);
+            --button-active-shadow-color: rgba(0, 0, 0, 0.08);
+            --spinner-color: #3B82F6;
+            --score-badge-bg: #D1FAE5;
+            --score-badge-text: #065F46;
+            --feedback-correct-color: #059669; /* Darker green for correct feedback */
+            --feedback-incorrect-color: #DC2626; /* Red for incorrect feedback */
+
+            /* Light theme specific glows */
+            --question-box-glow: 0 0 15px rgba(59, 130, 246, 0.3); /* Soft blue shadow for light theme */
+            --quiz-container-border-glow: none;
         }
 
-        /* Dark Theme overrides */
+        /* Dark Theme overrides (adapting previous dark theme with new accents) */
         html[data-theme="dark"] {
             --main-bg: #0d0f14;
             --card-bg: #12151a;
-            --secondary-card-bg: #1c222d; /* for question box */
+            --info-box-bg: #333d4f; /* Dark equivalent of yellow */
+            --info-box-border: #007bff; /* Dark theme glow border color */
+            --question-box-bg: #1c222d;
+            --primary-accent-blue: #00aaff; /* Dark theme blue */
+            --primary-accent-blue-hover: #0088cc;
+            --secondary-accent-green-start: #00aaff; /* Dark theme CTA */
+            --secondary-accent-green-end: #0088cc;
+            --secondary-accent-green-hover-start: #0077bb;
+            --secondary-accent-green-hover-end: #0066aa;
+            --warning-accent: #F59E0B; /* Keep warning same or adjust for dark contrast */
             --text-color: #ffffff;
             --secondary-text-color: #e0e0e0;
-            --tense-formula-bg: #333d4f; /* Darker yellow equivalent */
-            --tense-formula-text: #f0e68c;
-            --tense-formula-border: #525d70;
-            --option-button-bg: #2d3748; /* Darker tone for buttons */
-            --option-button-hover-bg: #1a202c;
-            --option-button-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); /* More pronounced dark shadow */
-            --option-button-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
-            --option-button-active-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-            --cta-button-bg: #00aaff; /* Dark theme CTA */
-            --cta-button-hover-bg: #0088cc;
-            --glow-shadow: none;
-            --glow-border: 2px solid var(--glow-border-color); /* Applied via JS for glow border */
-            --glow-border-color: #007bff; /* Specific color for glow border */
-            --feedback-correct: #5cb85c;
-            --feedback-incorrect: #ff6347;
-            --spinner-border-top: #00aaff;
+            --card-shadow-color: rgba(0, 0, 0, 0.5); /* More pronounced dark shadow */
+            --button-shadow-color: rgba(0, 0, 0, 0.5);
+            --button-hover-shadow-color: rgba(0, 0, 0, 0.6);
+            --button-active-shadow-color: rgba(0, 0, 0, 0.4);
+            --spinner-color: #00aaff;
+            --score-badge-bg: #1a273b; /* Darker background for score */
+            --score-badge-text: #e0e0e0; /* Lighter text for score */
+            --feedback-correct-color: #5cb85c;
+            --feedback-incorrect-color: #F59E0B; /* Changed to Warning Accent for dark theme incorrect */
+
+            /* Dark theme specific glows */
+            --question-box-glow: none;
+            --quiz-container-border-glow: 2px solid var(--info-box-border);
         }
 
+        /* Base styles using CSS variables */
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--main-bg);
@@ -70,22 +84,22 @@
             padding: 20px;
             box-sizing: border-box;
             color: var(--text-color);
-            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
+            transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6; /* Medium line spacing */
         }
         .quiz-container {
             background-color: var(--card-bg);
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            max-width: 800px;
+            border-radius: 1rem; /* rounded-2xl */
+            box-shadow: 0 10px 20px var(--card-shadow-color); /* shadow-lg */
+            padding: 2rem; /* p-8 */
+            max-width: 768px;
             width: 100%;
             text-align: center;
             display: flex;
             flex-direction: column;
             gap: 25px;
-            transition: background-color 0.3s ease, box-shadow 0.3s ease;
-            border: var(--glow-border); /* Apply glow border here */
-            border-color: var(--glow-border-color, transparent); /* Ensure border color is defined */
+            transition: background-color 0.3s ease, box-shadow 0.3s ease, border 0.3s ease;
+            border: var(--quiz-container-border-glow); /* Dark theme glow border */
         }
         .header {
             display: flex;
@@ -108,51 +122,78 @@
         }
         .quiz-title {
             color: var(--text-color);
+            font-size: 1.75rem; /* text-3xl approx */
+            font-weight: 700; /* bold */
+        }
+        .score-display {
+            background-color: var(--score-badge-bg);
+            color: var(--score-badge-text);
+            padding: 0.5rem 1rem; /* Pill style padding */
+            border-radius: 9999px; /* Fully rounded pill */
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            align-self: flex-end; /* Positioned below header, aligned right */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        @media (max-width: 600px) {
+            .score-display {
+                align-self: center; /* Center on small screens */
+            }
+            .quiz-title {
+                font-size: 1.5rem; /* Adjust title size for small screens */
+                text-align: center;
+            }
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
         .tense-formula {
-            background-color: var(--tense-formula-bg);
+            background-color: var(--info-box-bg);
             border-radius: 8px;
             padding: 15px 20px;
             font-size: 1.05rem;
-            color: var(--tense-formula-text);
+            color: var(--text-color); /* Updated to use general text color for better readability */
             margin-bottom: 15px;
             font-weight: 600;
             text-align: left;
-            border: 1px solid var(--tense-formula-border);
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            border-left: 5px solid var(--info-box-border); /* Yellow left border */
+            transition: background-color 0.3s ease, color 0.3s ease, border-left-color 0.3s ease;
         }
         .question-box {
-            background-color: var(--secondary-card-bg);
+            background-color: var(--question-box-bg);
             border-radius: 10px;
             padding: 25px;
             font-size: 1.25rem;
-            color: var(--text-color); /* Use main text color */
+            color: var(--text-color);
             min-height: 100px;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
             word-break: break-word;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            box-shadow: var(--glow-shadow); /* Apply glow shadow here */
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: var(--question-box-glow); /* Soft blue shadow for light theme */
         }
         .options-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            max-width: 500px;
-            margin: 0 auto;
+            max-width: 500px; /* Constrain width for a more compact look */
+            margin: 0 auto; /* Center the grid */
         }
 
         @media (max-width: 600px) {
             .options-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr; /* Stack buttons on smaller screens */
                 max-width: 100%;
             }
         }
 
         .option-button {
-            background-color: var(--option-button-bg);
+            background-color: var(--primary-accent-blue);
             color: white;
             padding: 15px 20px;
             border-radius: 10px;
@@ -161,19 +202,19 @@
             font-size: 1.1rem;
             font-weight: 600;
             transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: var(--option-button-shadow);
+            box-shadow: 0 4px 6px var(--button-shadow-color);
         }
         .option-button:hover {
-            background-color: var(--option-button-hover-bg);
-            transform: translateY(-3px);
-            box-shadow: var(--option-button-hover-shadow);
+            background-color: var(--primary-accent-blue-hover);
+            transform: scale(1.02); /* Subtle scale */
+            box-shadow: 0 6px 10px var(--button-hover-shadow-color); /* Subtle shadow increase */
         }
         .option-button:active {
             transform: translateY(0);
-            box-shadow: var(--option-button-active-shadow);
+            box-shadow: 0 2px 4px var(--button-active-shadow-color);
         }
         .generate-button {
-            background-color: var(--cta-button-bg);
+            background-image: linear-gradient(to right, var(--secondary-accent-green-start), var(--secondary-accent-green-end));
             color: white;
             padding: 15px 30px;
             border-radius: 10px;
@@ -181,11 +222,11 @@
             cursor: pointer;
             font-size: 1.2rem;
             font-weight: 700;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-image 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .generate-button:hover {
-            background-color: var(--cta-button-hover-bg);
+            background-image: linear-gradient(to right, var(--secondary-accent-green-hover-start), var(--secondary-accent-green-hover-end));
             transform: translateY(-2px);
         }
         .generate-button:active {
@@ -196,27 +237,21 @@
             margin-top: 15px;
             font-size: 1.1rem;
             font-weight: 600;
-            color: var(--feedback-correct); /* Default, will be overridden by .incorrect */
+            color: var(--feedback-correct-color); /* Default, will be overridden by .incorrect */
+            transition: color 0.3s ease;
         }
         .correct {
-            color: var(--feedback-correct);
+            color: var(--feedback-correct-color);
         }
         .incorrect {
-            color: var(--feedback-incorrect);
-        }
-        .score-display {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--secondary-text-color);
-            margin-bottom: 20px;
-            transition: color 0.3s ease;
+            color: var(--feedback-incorrect-color);
         }
         .hidden {
             display: none;
         }
         .loading-spinner {
             border: 4px solid #f3f3f3; /* Light grey */
-            border-top: 4px solid var(--spinner-border-top);
+            border-top: 4px solid var(--spinner-color);
             border-radius: 50%;
             width: 30px;
             height: 30px;
@@ -224,10 +259,19 @@
             margin: 20px auto;
             transition: border-top-color 0.3s ease;
         }
-
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Fade animation for question changes */
+        .fade-out-in {
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+        .fade-in {
+            opacity: 1;
+            transition: opacity 0.3s ease-in;
         }
     </style>
 </head>
@@ -235,15 +279,16 @@
 
     <div class="quiz-container">
         <div class="header">
-            <h1 class="text-3xl font-bold quiz-title">AI-Powered English Tense Practice Quiz</h1>
-            <button id="theme-toggle" class="theme-toggle">
+            <!-- Optional small logo/icon can go here -->
+            <h1 class="quiz-title">AI-Powered English Tense Practice Quiz</h1>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
                 <i class="fas fa-moon"></i> <!-- Moon icon for dark mode -->
             </button>
         </div>
         
         <div class="score-display">Score: <span id="score">0</span> / Questions Answered: <span id="questions-answered">0</span></div>
 
-        <div class="loading-spinner hidden" id="loading-spinner"></div>
+        <div class="loading-spinner hidden" id="loading-spinner" aria-label="Loading new question"></div>
         <div class="tense-formula" id="tense-formula-display"></div>
         <div class="question-box" id="question-text">Click 'Generate New Question' to start!</div>
 
@@ -257,7 +302,7 @@
     </div>
 
     <script>
-        // Define all possible tenses and their formulas based on the provided image
+        // Define all possible tenses and their formulas
         const tenseRules = [
             { tense: "Present Simple (Affirmative)", formula: "Subject + verb 1st form + s, es + object" },
             { tense: "Present Simple (Negative)", formula: "Subject + do/does + not + verb 1st form + object" },
@@ -297,7 +342,7 @@
             { tense: "Past Perfect Continuous (Affirmative)", formula: "Subject + had + been + verb 1st form + ing + object + since/for/till + point of time/duration" },
             { tense: "Past Perfect Continuous (Negative)", formula: "Subject + had + not + been + verb 1st form + ing + object + since/for/till + point of time/duration" },
             { tense: "Past Perfect Continuous (Interrogative)", formula: "Had + Subject + been + verb 1st form + ing + object + since/for + point of time/duration?" },
-            { tense: "Past Perfect Continuous (Interrogative Negative)", formula: "Had + Subject + not + been + verb 1st form + ing + object + since/for/till + point of time/duration? OR Hadn't + Subject + been + verb 1st form + ing + object + since/for/till + point of time/duration?" },
+            { tense: "Past Perfect Continuous (Interrogative Negative)", formula: "Had + Subject + not + been + verb 1st form + ing + object + since/for + till + point of time/duration? OR Hadn't + Subject + been + verb 1st form + ing + object + since/for + till + point of time/duration?" },
 
             { tense: "Future Simple (Affirmative)", formula: "Subject + will + verb 1st form + object" },
             { tense: "Future Simple (Negative)", formula: "Subject + will + not + verb 1st form + object" },
@@ -324,6 +369,8 @@
         let questionsAnswered = 0;
         let currentQuestion = null; // Store the currently displayed AI-generated question
 
+        // Get DOM elements
+        const quizContainer = document.querySelector('.quiz-container');
         const questionTextElement = document.getElementById('question-text');
         const optionsContainer = document.getElementById('options-container');
         const feedbackElement = document.getElementById('feedback');
@@ -341,9 +388,9 @@
             localStorage.setItem('theme', theme); // Save preference
             // Update toggle icon
             if (theme === 'dark') {
-                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>'; // Sun icon for dark mode
             } else {
-                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>'; // Moon icon for light mode
             }
         }
 
@@ -354,31 +401,43 @@
             setTheme(newTheme);
         }
 
-        // Function to display an AI-generated question
+        // Function to display an AI-generated question with fade animation
         function displayQuestion(q) {
-            currentQuestion = q; // Store the new question
+            // Apply fade-out class immediately before updating content
+            quizContainer.classList.remove('fade-in');
+            quizContainer.classList.add('fade-out-in');
 
-            // Reset UI for new question
-            feedbackElement.textContent = '';
-            feedbackElement.classList.remove('correct', 'incorrect');
-            optionsContainer.innerHTML = ''; // Clear previous options
-            generateButton.textContent = 'Generate New Question'; // Reset button text
-            generateButton.disabled = false; // Enable button
+            // Wait for fade-out to complete before updating content
+            setTimeout(() => {
+                currentQuestion = q; // Store the new question
 
-            // Update displays
-            tenseFormulaDisplay.textContent = `${q.tense} Formula: ${q.formula}`;
-            questionTextElement.textContent = q.question;
-            scoreDisplay.textContent = score;
-            questionsAnsweredDisplay.textContent = questionsAnswered;
+                // Reset UI for new question
+                feedbackElement.textContent = '';
+                feedbackElement.classList.remove('correct', 'incorrect');
+                optionsContainer.innerHTML = ''; // Clear previous options
+                generateButton.textContent = 'Generate New Question'; // Reset button text
+                generateButton.disabled = false; // Enable button
 
-            // Create and append option buttons
-            q.options.forEach(option => {
-                const button = document.createElement('button');
-                button.textContent = option;
-                button.classList.add('option-button');
-                button.addEventListener('click', () => selectOption(button, option, q.answer));
-                optionsContainer.appendChild(button);
-            });
+                // Update displays
+                tenseFormulaDisplay.textContent = `${q.tense} Formula: ${q.formula}`;
+                tenseFormulaDisplay.style.color = 'var(--text-color)'; /* Ensure info box text uses main text color */
+                questionTextElement.textContent = q.question;
+                scoreDisplay.textContent = score;
+                questionsAnsweredDisplay.textContent = questionsAnswered;
+
+                // Create and append option buttons
+                q.options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.classList.add('option-button');
+                    button.addEventListener('click', () => selectOption(button, option, q.answer));
+                    optionsContainer.appendChild(button);
+                });
+
+                // Apply fade-in class after content is updated
+                quizContainer.classList.remove('fade-out-in');
+                quizContainer.classList.add('fade-in');
+            }, 300); // Duration matches CSS transition for fade-out
         }
 
         // Function to handle option selection
@@ -408,7 +467,7 @@
             generateButton.disabled = true;
             generateButton.textContent = 'Generating...';
 
-            // Clear previous question and options
+            // Clear previous question and options for immediate feedback
             tenseFormulaDisplay.textContent = '';
             questionTextElement.textContent = '';
             optionsContainer.innerHTML = '';
