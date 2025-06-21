@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light"> <!-- Default to light theme -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered English Tense Practice Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS Variables for Themes */
+        :root {
+            /* Light Theme */
+            --main-bg: #ffffff;
+            --card-bg: #f2f2f2;
+            --secondary-card-bg: #e0f2fe; /* for question box */
+            --text-color: #000000;
+            --secondary-text-color: #2d3748; /* Dark grey for score */
+            --tense-formula-bg: #fefcbf;
+            --tense-formula-text: #744210;
+            --tense-formula-border: #ecc94b;
+            --option-button-bg: #3182ce;
+            --option-button-hover-bg: #2b6cb0;
+            --option-button-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            --option-button-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
+            --option-button-active-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            --cta-button-bg: #007bff; /* Light theme CTA */
+            --cta-button-hover-bg: #0056b3;
+            --glow-shadow: 0 0 15px rgba(0, 123, 255, 0.5); /* Soft blue shadow */
+            --glow-border: none;
+            --feedback-correct: #2f855a;
+            --feedback-incorrect: #e53e3e;
+            --spinner-border-top: #3498db;
+        }
+
+        /* Dark Theme overrides */
+        html[data-theme="dark"] {
+            --main-bg: #0d0f14;
+            --card-bg: #12151a;
+            --secondary-card-bg: #1c222d; /* for question box */
+            --text-color: #ffffff;
+            --secondary-text-color: #e0e0e0;
+            --tense-formula-bg: #333d4f; /* Darker yellow equivalent */
+            --tense-formula-text: #f0e68c;
+            --tense-formula-border: #525d70;
+            --option-button-bg: #2d3748; /* Darker tone for buttons */
+            --option-button-hover-bg: #1a202c;
+            --option-button-shadow: 0 6px 12px rgba(0, 0, 0, 0.5); /* More pronounced dark shadow */
+            --option-button-hover-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+            --option-button-active-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            --cta-button-bg: #00aaff; /* Dark theme CTA */
+            --cta-button-hover-bg: #0088cc;
+            --glow-shadow: none;
+            --glow-border: 2px solid var(--glow-border-color); /* Applied via JS for glow border */
+            --glow-border-color: #007bff; /* Specific color for glow border */
+            --feedback-correct: #5cb85c;
+            --feedback-incorrect: #ff6347;
+            --spinner-border-top: #00aaff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--main-bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition for theme change */
+        }
+        .quiz-container {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            border: var(--glow-border); /* Apply glow border here */
+            border-color: var(--glow-border-color, transparent); /* Ensure border color is defined */
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: color 0.3s ease, transform 0.2s ease;
+            padding: 5px;
+            border-radius: 50%;
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        .quiz-title {
+            color: var(--text-color);
+        }
+        .tense-formula {
+            background-color: var(--tense-formula-bg);
+            border-radius: 8px;
+            padding: 15px 20px;
+            font-size: 1.05rem;
+            color: var(--tense-formula-text);
+            margin-bottom: 15px;
+            font-weight: 600;
+            text-align: left;
+            border: 1px solid var(--tense-formula-border);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        .question-box {
+            background-color: var(--secondary-card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            font-size: 1.25rem;
+            color: var(--text-color); /* Use main text color */
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            word-break: break-word;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            box-shadow: var(--glow-shadow); /* Apply glow shadow here */
+        }
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+            .options-grid {
+                grid-template-columns: 1fr;
+                max-width: 100%;
+            }
+        }
+
+        .option-button {
+            background-color: var(--option-button-bg);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: var(--option-button-shadow);
+        }
+        .option-button:hover {
+            background-color: var(--option-button-hover-bg);
+            transform: translateY(-3px);
+            box-shadow: var(--option-button-hover-shadow);
+        }
+        .option-button:active {
+            transform: translateY(0);
+            box-shadow: var(--option-button-active-shadow);
+        }
+        .generate-button {
+            background-color: var(--cta-button-bg);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            font-weight: 700;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .generate-button:hover {
+            background-color: var(--cta-button-hover-bg);
+            transform: translateY(-2px);
+        }
+        .generate-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .feedback-message {
+            margin-top: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--feedback-correct); /* Default, will be overridden by .incorrect */
+        }
+        .correct {
+            color: var(--feedback-correct);
+        }
+        .incorrect {
+            color: var(--feedback-incorrect);
+        }
+        .score-display {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--secondary-text-color);
+            margin-bottom: 20px;
+            transition: color 0.3s ease;
+        }
+        .hidden {
+            display: none;
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3; /* Light grey */
+            border-top: 4px solid var(--spinner-border-top);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            transition: border-top-color 0.3s ease;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <div class="header">
+            <h1 class="text-3xl font-bold quiz-title">AI-Powered English Tense Practice Quiz</h1>
+            <button id="theme-toggle" class="theme-toggle">
+                <i class="fas fa-moon"></i> <!-- Moon icon for dark mode -->
+            </button>
+        </div>
+        
+        <div class="score-display">Score: <span id="score">0</span> / Questions Answered: <span id="questions-answered">0</span></div>
+
+        <div class="loading-spinner hidden" id="loading-spinner"></div>
+        <div class="tense-formula" id="tense-formula-display"></div>
+        <div class="question-box" id="question-text">Click 'Generate New Question' to start!</div>
+
+        <div class="options-grid" id="options-container">
+            <!-- Options will be dynamically inserted here -->
+        </div>
+
+        <div id="feedback" class="feedback-message"></div>
+
+        <button id="generate-question-button" class="generate-button">Generate New Question</button>
+    </div>
+
+    <script>
+        // Define all possible tenses and their formulas based on the provided image
+        const tenseRules = [
+            { tense: "Present Simple (Affirmative)", formula: "Subject + verb 1st form + s, es + object" },
+            { tense: "Present Simple (Negative)", formula: "Subject + do/does + not + verb 1st form + object" },
+            { tense: "Present Simple (Interrogative)", formula: "Do/Does + Subject + verb 1st form + object?" },
+            { tense: "Present Simple (Interrogative Negative)", formula: "Do/Does + Subject + not + verb 1st form + object? OR Don't/Doesn't + Subject + verb 1st form + object?" },
+
+            { tense: "Present Continuous (Affirmative)", formula: "Subject + is/am/are + verb 1st form + ing + object" },
+            { tense: "Present Continuous (Negative)", formula: "Subject + is/am/are + not + verb 1st form + ing + object" },
+            { tense: "Present Continuous (Interrogative)", formula: "Is/Am/Are + Subject + verb 1st form + ing + object?" },
+            { tense: "Present Continuous (Interrogative Negative)", formula: "Is/Am/Are + Subject + not + verb 1st form + ing + object? OR Isn't/Aren't/Ain't + Subject + verb 1st form + ing + object?" },
+
+            { tense: "Present Perfect (Affirmative)", formula: "Subject + has/have + verb 3rd form + object" },
+            { tense: "Present Perfect (Negative)", formula: "Subject + has/have + not + verb 3rd form + object" },
+            { tense: "Present Perfect (Interrogative)", formula: "Has/Have + Subject + verb 3rd form + object?" },
+            { tense: "Present Perfect (Interrogative Negative)", formula: "Has/Have + Subject + not + verb 3rd form + object? OR Hasn't/Haven't + Subject + verb 3rd form + object?" },
+
+            { tense: "Present Perfect Continuous (Affirmative)", formula: "Subject + has/have + been + verb 1st form + ing + object + since/for + point of time/duration" },
+            { tense: "Present Perfect Continuous (Negative)", formula: "Subject + has/have + not + been + verb 1st form + ing + object + since/for + point of time/duration" },
+            { tense: "Present Perfect Continuous (Interrogative)", formula: "Has/Have + Subject + been + verb 1st form + ing + object + since/for + point of time/duration?" },
+            { tense: "Present Perfect Continuous (Interrogative Negative)", formula: "Has/Have + Subject + not + been + verb 1st form + ing + object + since/for + point of time/duration? OR Hasn't/Haven't + Subject + been + verb 1st form + ing + object + since/for + point of time/duration?" },
+
+            { tense: "Past Simple (Affirmative)", formula: "Subject + verb 2nd form + object" },
+            { tense: "Past Simple (Negative)", formula: "Subject + did + not + verb 1st form + object" },
+            { tense: "Past Simple (Interrogative)", formula: "Did + Subject + verb 1st form + object?" },
+            { tense: "Past Simple (Interrogative Negative)", formula: "Did + Subject + not + verb 1st form + object? OR Didn't + Subject + verb 1st form + object?" },
+
+            { tense: "Past Continuous (Affirmative)", formula: "Subject + was/were + verb 1st form + ing + object" },
+            { tense: "Past Continuous (Negative)", formula: "Subject + was/were + not + verb 1st form + ing + object" },
+            { tense: "Past Continuous (Interrogative)", formula: "Was/Were + Subject + verb 1st form + ing + object?" },
+            { tense: "Past Continuous (Interrogative Negative)", formula: "Was/Were + Subject + not + verb 1st form + ing + object? OR Wasn't/Weren't + Subject + verb 1st form + ing + object?" },
+
+            { tense: "Past Perfect (Affirmative)", formula: "Subject + had + verb 3rd form + object" },
+            { tense: "Past Perfect (Negative)", formula: "Subject + had + not + verb 3rd form + object" },
+            { tense: "Past Perfect (Interrogative)", formula: "Had + Subject + verb 3rd form + object?" },
+            { tense: "Past Perfect (Interrogative Negative)", formula: "Had + Subject + not + verb 3rd form + object? OR Hadn't + Subject + verb 3rd form + object?" },
+
+            { tense: "Past Perfect Continuous (Affirmative)", formula: "Subject + had + been + verb 1st form + ing + object + since/for/till + point of time/duration" },
+            { tense: "Past Perfect Continuous (Negative)", formula: "Subject + had + not + been + verb 1st form + ing + object + since/for/till + point of time/duration" },
+            { tense: "Past Perfect Continuous (Interrogative)", formula: "Had + Subject + been + verb 1st form + ing + object + since/for + point of time/duration?" },
+            { tense: "Past Perfect Continuous (Interrogative Negative)", formula: "Had + Subject + not + been + verb 1st form + ing + object + since/for/till + point of time/duration? OR Hadn't + Subject + been + verb 1st form + ing + object + since/for/till + point of time/duration?" },
+
+            { tense: "Future Simple (Affirmative)", formula: "Subject + will + verb 1st form + object" },
+            { tense: "Future Simple (Negative)", formula: "Subject + will + not + verb 1st form + object" },
+            { tense: "Future Simple (Interrogative)", formula: "Will + Subject + verb 1st form + object?" },
+            { tense: "Future Simple (Interrogative Negative)", formula: "Will + Subject + not + verb 1st form + object? OR Won't + Subject + verb 1st form + object?" },
+
+            { tense: "Future Continuous (Affirmative)", formula: "Subject + will + be + verb 1st form + ing + object" },
+            { tense: "Future Continuous (Negative)", formula: "Subject + will + not + be + verb 1st form + ing + object" },
+            { tense: "Future Continuous (Interrogative)", formula: "Will + Subject + be + verb 1st form + ing + object?" },
+            { tense: "Future Continuous (Interrogative Negative)", formula: "Will + Subject + not + be + verb 1st form + ing + object? OR Won't + Subject + be + verb 1st form + ing + object?" },
+
+            { tense: "Future Perfect (Affirmative)", formula: "Subject + will + have + verb 3rd form + object" },
+            { tense: "Future Perfect (Negative)", formula: "Subject + will + not + have + verb 3rd form + object" },
+            { tense: "Future Perfect (Interrogative)", formula: "Will + Subject + have + verb 3rd form + object?" },
+            { tense: "Future Perfect (Interrogative Negative)", formula: "Will + Subject + not + have + verb 3rd form + object? OR Won't + Subject + have + verb 3rd form + object?" },
+
+            { tense: "Future Perfect Continuous (Affirmative)", formula: "Subject + will + have + been + verb 1st form + ing + object + since/for + point of duration" },
+            { tense: "Future Perfect Continuous (Negative)", formula: "Subject + will + not + have + been + verb 1st form + ing + object + since/for + point of duration" },
+            { tense: "Future Perfect Continuous (Interrogative)", formula: "Will + Subject + have + been + verb 1st form + ing + object + since/for + point of duration?" },
+            { tense: "Future Perfect Continuous (Interrogative Negative)", formula: "Will + Subject + not + have + been + verb 1st form + ing + object + since/for + point of duration? OR Won't + Subject + have + been + verb 1st form + ing + object + since/for + point of duration?" }
+        ];
+
+        let score = 0;
+        let questionsAnswered = 0;
+        let currentQuestion = null; // Store the currently displayed AI-generated question
+
+        const questionTextElement = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackElement = document.getElementById('feedback');
+        const generateButton = document.getElementById('generate-question-button');
+        const scoreDisplay = document.getElementById('score');
+        const questionsAnsweredDisplay = document.getElementById('questions-answered');
+        const tenseFormulaDisplay = document.getElementById('tense-formula-display');
+        const loadingSpinner = document.getElementById('loading-spinner');
+        const themeToggle = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement; // Get the root html element
+
+        // Function to set the theme
+        function setTheme(theme) {
+            htmlElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme); // Save preference
+            // Update toggle icon
+            if (theme === 'dark') {
+                themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        }
+
+        // Function to toggle the theme
+        function toggleTheme() {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        }
+
+        // Function to display an AI-generated question
+        function displayQuestion(q) {
+            currentQuestion = q; // Store the new question
+
+            // Reset UI for new question
+            feedbackElement.textContent = '';
+            feedbackElement.classList.remove('correct', 'incorrect');
+            optionsContainer.innerHTML = ''; // Clear previous options
+            generateButton.textContent = 'Generate New Question'; // Reset button text
+            generateButton.disabled = false; // Enable button
+
+            // Update displays
+            tenseFormulaDisplay.textContent = `${q.tense} Formula: ${q.formula}`;
+            questionTextElement.textContent = q.question;
+            scoreDisplay.textContent = score;
+            questionsAnsweredDisplay.textContent = questionsAnswered;
+
+            // Create and append option buttons
+            q.options.forEach(option => {
+                const button = document.createElement('button');
+                button.textContent = option;
+                button.classList.add('option-button');
+                button.addEventListener('click', () => selectOption(button, option, q.answer));
+                optionsContainer.appendChild(button);
+            });
+        }
+
+        // Function to handle option selection
+        function selectOption(button, option, correctAnswer) {
+            // Disable all option buttons after selection
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.disabled = true;
+            });
+
+            if (option === correctAnswer) {
+                feedbackElement.textContent = 'Correct!';
+                feedbackElement.classList.add('correct');
+                score++;
+            } else {
+                feedbackElement.textContent = `Incorrect! The correct answer was "${correctAnswer}".`;
+                feedbackElement.classList.add('incorrect');
+            }
+            questionsAnswered++; // Increment answered count
+            scoreDisplay.textContent = score; // Update score immediately
+            questionsAnsweredDisplay.textContent = questionsAnswered;
+        }
+
+        // Function to call the Gemini API and get a new question
+        async function generateNewQuestion() {
+            // Show loading spinner and disable button
+            loadingSpinner.classList.remove('hidden');
+            generateButton.disabled = true;
+            generateButton.textContent = 'Generating...';
+
+            // Clear previous question and options
+            tenseFormulaDisplay.textContent = '';
+            questionTextElement.textContent = '';
+            optionsContainer.innerHTML = '';
+            feedbackElement.textContent = '';
+
+            try {
+                // Randomly select a tense rule to guide the AI
+                const randomIndex = Math.floor(Math.random() * tenseRules.length);
+                const selectedRule = tenseRules[randomIndex];
+
+                // Construct the prompt for the Gemini API
+                const prompt = `Generate a single English grammar quiz question for the "${selectedRule.tense}" tense.
+                The question should have a missing word or phrase (e.g., use '____' or '(verb)').
+                Provide 4 plausible multiple-choice options for the missing part, with one correct answer.
+                The question format should ideally be fill-in-the-blank or a simple sentence completion.
+                The correct answer should fit the formula: "${selectedRule.formula}".
+                
+                Return the response as a JSON object with the following structure:
+                {
+                  "question": "The sentence with the blank or prompt.",
+                  "options": ["option1", "option2", "option3", "option4"],
+                  "answer": "The correct answer from the options.",
+                  "tense": "The exact tense name, e.g., 'Present Simple (Affirmative)'",
+                  "formula": "The exact formula for this tense, e.g., 'Subject + verb 1st form + s, es + object'"
+                }
+                
+                Ensure the generated question and options are clear and unambiguous for the specified tense.`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = {
+                    contents: chatHistory,
+                    generationConfig: {
+                        responseMimeType: "application/json",
+                        responseSchema: {
+                            type: "OBJECT",
+                            properties: {
+                                "question": { "type": "STRING" },
+                                "options": { "type": "ARRAY", "items": { "type": "STRING" } },
+                                "answer": { "type": "STRING" },
+                                "tense": { "type": "STRING" },
+                                "formula": { "type": "STRING" }
+                            },
+                            required: ["question", "options", "answer", "tense", "formula"]
+                        }
+                    }
+                };
+
+                const apiKey = "AIzaSyAaRiIhTMu6bmv9mvQf9pM1CfYLtPWDsRU"; // Canvas will automatically provide the API key
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorBody = await response.json();
+                    throw new Error(`API error: ${response.status} ${response.statusText} - ${JSON.stringify(errorBody)}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const jsonString = result.candidates[0].content.parts[0].text;
+                    const generatedQuestion = JSON.parse(jsonString);
+
+                    // Validate the generated question structure
+                    if (generatedQuestion.question && generatedQuestion.options &&
+                        Array.isArray(generatedQuestion.options) && generatedQuestion.options.length === 4 &&
+                        generatedQuestion.answer && generatedQuestion.tense && generatedQuestion.formula) {
+                        displayQuestion(generatedQuestion);
+                    } else {
+                        throw new Error("Invalid structure for generated question.");
+                    }
+                } else {
+                    throw new Error("No content received from AI.");
+                }
+            } catch (error) {
+                console.error("Error generating question:", error);
+                feedbackElement.textContent = `Error generating question. Please try again. (${error.message})`;
+                feedbackElement.classList.add('incorrect');
+                questionTextElement.textContent = 'Could not generate question.';
+                tenseFormulaDisplay.textContent = '';
+            } finally {
+                // Hide loading spinner and enable button
+                loadingSpinner.classList.add('hidden');
+                generateButton.disabled = false;
+                generateButton.textContent = 'Generate New Question';
+            }
+        }
+
+        // Event listener for the generate question button
+        generateButton.addEventListener('click', generateNewQuestion);
+
+        // Initial setup on window load
+        window.onload = () => {
+            // Load theme from localStorage
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                setTheme(savedTheme);
+            } else {
+                // Set default theme if no preference is found
+                setTheme('light');
+            }
+
+            // Add event listener for theme toggle
+            themeToggle.addEventListener('click', toggleTheme);
+        };
+    </script>
+</body>
+</html>
