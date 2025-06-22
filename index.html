@@ -399,34 +399,31 @@
     </style>
 </head>
 <body>
-    <!-- Audio Elements for local sounds -->
     <audio id="background-music" loop>
-        <!-- REPLACE 'path/to/your/background_music.mp3' with your actual file path -->
         <source src="background.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
     <audio id="click-sound">
-        <!-- REPLACE 'path/to/your/click_sound.mp3' with your actual file path -->
         <source src="click.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
     <audio id="generate-question-sound">
-        <!-- REPLACE 'path/to/your/generate_question_sound.mp3' with your actual file path -->
         <source src="question.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
+    <audio id="generate-finish-sound">
+        <source src="generate_finish.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
     <audio id="correct-sound">
-        <!-- REPLACE 'path/to/your/correct_sound.mp3' with your actual file path -->
         <source src="correct.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
     <audio id="wrong-sound">
-        <!-- REPLACE 'path/to/your/wrong_sound.mp3' with your actual file path -->
         <source src="wrong.mp3" type="audio/mpeg">
         Your browser does not support the audio element.
     </audio>
 
-    <!-- Bubble Container for background animation -->
     <div id="bubble-container" class="bubble-container"></div>
 
     <div class="quiz-container" id="quiz-container-main">
@@ -538,7 +535,8 @@
         // Get audio elements
         const backgroundMusic = document.getElementById('background-music');
         const clickSound = document.getElementById('click-sound');
-        const generateQuestionSound = document.getElementById('generate-question-sound'); // New audio element
+        const generateQuestionSound = document.getElementById('generate-question-sound'); 
+        const generateFinishSound = document.getElementById('generate-finish-sound'); // New audio element
         const correctSound = document.getElementById('correct-sound');
         const wrongSound = document.getElementById('wrong-sound');
 
@@ -762,6 +760,7 @@
                         Array.isArray(generatedQuestion.options) && generatedQuestion.options.length === 4 &&
                         generatedQuestion.answer && generatedQuestion.tense && generatedQuestion.formula) {
                         displayQuestion(generatedQuestion);
+                        playSound(generateFinishSound); // Play generate finish sound after question is displayed
                     } else {
                         throw new Error("Invalid structure for generated question.");
                     }
