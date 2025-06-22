@@ -44,7 +44,7 @@
             --theme-toggle-color: #4B5563; /* Darker gray for light theme icon */
             --title-glow-color: rgba(59, 130, 246, 0.5); /* Blue glow for title in light theme */
             --border-glow-color: rgba(59, 130, 246, 0.5); /* Blue glow for border in light theme */
-            --bubble-color: #ffffff; /* Light blue, increased transparency for light theme */
+            --bubble-color: #b2eefaf1; /* Light blue, increased transparency for light theme */
         }
 
         /* Dark Theme overrides (adapting previous dark theme with new accents) */
@@ -82,7 +82,7 @@
             --theme-toggle-color: #a0aec0; /* Lighter gray for dark theme icon */
             --title-glow-color: rgba(0, 170, 255, 0.5); /* Blue glow for title in dark theme */
             --border-glow-color: rgba(0, 170, 255, 0.5); /* Blue glow for border in dark theme */
-            --bubble-color: rgba(255, 255, 255); /* Darker blue, increased transparency for dark theme */
+            --bubble-color: rgba(64, 164, 223, 0.4); /* Darker blue, increased transparency for dark theme */
         }
 
         /* Animations */
@@ -198,10 +198,71 @@
         }
         .header {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
             margin-bottom: 12px; /* scaled from 20px */
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            gap: 20px; /* Space between header items */
         }
+        .control-buttons {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Space between controls */
+            flex-wrap: wrap; /* Allow controls to wrap */
+        }
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--theme-toggle-color);
+        }
+        .volume-control i {
+            font-size: 1.1rem; /* Icon size */
+        }
+        .volume-control input[type="range"] {
+            -webkit-appearance: none; /* Override default appearance */
+            appearance: none;
+            width: 80px; /* Adjusted width for compactness */
+            height: 6px; /* Track height */
+            background: var(--secondary-text-color); /* Default track color */
+            outline: none;
+            opacity: 0.8;
+            transition: opacity .2s;
+            border-radius: 3px; /* Rounded track */
+        }
+
+        .volume-control input[type="range"]:hover {
+            opacity: 1;
+        }
+
+        /* Thumb styles */
+        .volume-control input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px; /* Thumb size */
+            height: 16px; /* Thumb size */
+            border-radius: 50%;
+            background: var(--primary-accent-blue); /* Thumb color */
+            cursor: pointer;
+            box-shadow: 0 0 2px rgba(0,0,0,0.3);
+            margin-top: -5px; /* Center thumb vertically on track */
+        }
+
+        .volume-control input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--primary-accent-blue);
+            cursor: pointer;
+            box-shadow: 0 0 2px rgba(0,0,0,0.3);
+        }
+
+        /* Track styles for Firefox */
+        .volume-control input[type="range"]::-moz-range-track {
+            background: var(--secondary-text-color);
+            border-radius: 3px;
+        }
+
         .theme-toggle {
             background: none;
             border: none;
@@ -249,6 +310,11 @@
             .header {
                 flex-direction: column;
                 gap: 9px; /* scaled from 15px */
+                align-items: flex-start; /* Align header items to start */
+            }
+            .control-buttons {
+                justify-content: center; /* Center controls when wrapped */
+                width: 100%; /* Take full width */
             }
             .quiz-container {
                 padding: 0.9rem; /* scaled from 1.5rem */
@@ -429,9 +495,19 @@
     <div class="quiz-container" id="quiz-container-main">
         <div class="header">
             <h1 class="quiz-title">AI-Tense Practice Quiz</h1>
-            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-                <i class="fas fa-moon"></i>
-            </button>
+            <div class="control-buttons">
+                <div class="volume-control">
+                    <i class="fas fa-music" title="Background Music Volume"></i>
+                    <input type="range" id="music-volume-slider" min="0" max="1" step="0.01">
+                </div>
+                <div class="volume-control">
+                    <i class="fas fa-volume-up" title="Sound Effects Volume"></i>
+                    <input type="range" id="sound-effects-volume-slider" min="0" max="1" step="0.01">
+                </div>
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </div>
         
         <div class="score-display" id="score-display-element">Score: <span id="score">0</span> / Questions Answered: <span id="questions-answered">0</span></div>
@@ -469,7 +545,7 @@
             { tense: "Present Perfect Continuous (Affirmative)", formula: "Subject + has/have + been + verb 1st form + ing + object + since/for + point of time/duration" },
             { tense: "Present Perfect Continuous (Negative)", formula: "Subject + has/have + not + been + verb 1st form + ing + object + since/for + point of time/duration" },
             { tense: "Present Perfect Continuous (Interrogative)", formula: "Has/Have + Subject + been + verb 1st form + ing + object + since/for + point of time/duration?" },
-            { tense: "Present Perfect Continuous (Interrogative Negative)", formula: "Has/Have + Subject + not + been + verb 1st form + ing + object + since/for + point of time/duration? OR Hasn't/Haven't + Subject + been + verb 1st form + ing + object + since/for + point of time/duration?" },
+            { tense: "Present Perfect Continuous (Interrogative Negative)", formula: "Has/Have + Subject + not + been + verb 1st form + ing + object + since/for + point of time/duration? OR Hasn't/Haven't + Subject + verb 1st form + ing + object + since/for + point of time/duration?" },
 
             { tense: "Past Simple (Affirmative)", formula: "Subject + verb 2nd form + object" },
             { tense: "Past Simple (Negative)", formula: "Subject + did + not + verb 1st form + object" },
@@ -528,6 +604,8 @@
         const tenseFormulaDisplay = document.getElementById('tense-formula-display');
         const loadingSpinner = document.getElementById('loading-spinner');
         const themeToggle = document.getElementById('theme-toggle');
+        const musicVolumeSlider = document.getElementById('music-volume-slider');
+        const soundEffectsVolumeSlider = document.getElementById('sound-effects-volume-slider');
         const htmlElement = document.documentElement; // Get the root html element
         const scoreDisplayElement = document.getElementById('score-display-element');
         const bubbleContainer = document.getElementById('bubble-container');
@@ -536,16 +614,28 @@
         const backgroundMusic = document.getElementById('background-music');
         const clickSound = document.getElementById('click-sound');
         const generateQuestionSound = document.getElementById('generate-question-sound'); 
-        const generateFinishSound = document.getElementById('generate-finish-sound'); // New audio element
+        const generateFinishSound = document.getElementById('generate-finish-sound'); 
         const correctSound = document.getElementById('correct-sound');
         const wrongSound = document.getElementById('wrong-sound');
 
-        // Function to initialize audio (play background music)
+        // Store all sound effect audio elements in an array for easy control
+        const soundEffects = [clickSound, generateQuestionSound, generateFinishSound, correctSound, wrongSound];
+
+        // Function to initialize audio (play background music and set volumes)
         function initializeAudio() {
             if (audioInitialized) return; // Prevent re-initialization
-            
+
+            // Set initial volumes from localStorage or default to 0.5
+            const savedMusicVolume = parseFloat(localStorage.getItem('backgroundMusicVolume')) || 0.5;
+            const savedSFXVolume = parseFloat(localStorage.getItem('soundEffectsVolume')) || 0.5;
+
+            musicVolumeSlider.value = savedMusicVolume;
+            soundEffectsVolumeSlider.value = savedSFXVolume;
+
+            backgroundMusic.volume = savedMusicVolume;
+            soundEffects.forEach(audio => audio.volume = savedSFXVolume);
+
             // Attempt to play background music. Browsers often require user interaction.
-            // This will likely be triggered by the first 'generate question' button click.
             backgroundMusic.play().then(() => {
                 console.log("Background music started.");
                 audioInitialized = true;
@@ -675,8 +765,7 @@
 
         // Function to call the Gemini API and get a new question
         async function generateNewQuestion() {
-            // Initialize audio on first interaction
-            initializeAudio();
+            // No longer initialize audio here. It's done once on window.onload.
             playSound(generateQuestionSound); // Play generate question sound immediately
 
             // Show loading spinner and disable button
@@ -815,9 +904,27 @@
             });
         }
 
-
-        // Event listener for the generate question button
+        // Event listeners
         generateButton.addEventListener('click', generateNewQuestion);
+        
+        musicVolumeSlider.addEventListener('input', (event) => {
+            backgroundMusic.volume = event.target.value;
+            localStorage.setItem('backgroundMusicVolume', event.target.value);
+            // If music was paused and volume is increased from 0, attempt to play
+            if (backgroundMusic.paused && event.target.value > 0) {
+                backgroundMusic.play().catch(e => console.warn("Could not play music on volume increase:", e));
+            } else if (event.target.value == 0) { // If volume is set to 0, pause music
+                backgroundMusic.pause();
+            }
+        });
+
+        soundEffectsVolumeSlider.addEventListener('input', (event) => {
+            const newVolume = event.target.value;
+            soundEffects.forEach(audio => {
+                audio.volume = newVolume;
+            });
+            localStorage.setItem('soundEffectsVolume', newVolume);
+        });
 
         // Initial setup on window load
         window.onload = () => {
@@ -829,6 +936,10 @@
                 // Set default theme if no preference is found
                 setTheme('light');
             }
+
+            // Initialize audio settings (volumes from localStorage)
+            // This is the correct place to initialize audio once.
+            initializeAudio();
 
             // Add event listener for theme toggle
             themeToggle.addEventListener('click', toggleTheme);
